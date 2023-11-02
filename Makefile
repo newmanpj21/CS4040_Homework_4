@@ -18,4 +18,4 @@ $(EXEC): $(OBJ)
 
 # Clean
 clean:
-	rm -f $(OBJ) $(EXEC)t
+	rm -f $(OBJ) $(EXEC)

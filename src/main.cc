@@ -6,10 +6,14 @@
  */
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
 // Main function
 int main()
 {
+    string test;
+    cout << "enter a string \n";
+    cin >> test;
 }
