@@ -9,6 +9,19 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "make debug",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "HW4_debug"
+            ], // replace "debug" with your actual target name
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
         }
     ]
 }

@@ -5,7 +5,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/HW4",
+            "program": "${workspaceFolder}/HW4_debug",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -19,7 +19,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "make"
+            "preLaunchTask": "make debug" // use the new task here
         }
     ]
 }
