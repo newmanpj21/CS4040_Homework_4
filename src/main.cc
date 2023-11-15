@@ -85,29 +85,37 @@ int main()
 
 int memoizedCutRod(vector<int> p, int n)
 {
+    // create a vector to store the memoized values
     vector<int> r(n + 1, -1);
+    // call the helper function
     return memoizedCutRodAux(p, n, r);
 }
 
 int memoizedCutRodAux(vector<int> p, int n, vector<int> &r)
 {
+    // if the value is already memoized, return it
     if (r[n] >= 0)
     {
         return r[n];
     }
+    // if the length of the rod is 0, return 0
     else if (n == 0)
     {
         return 0;
     }
+    // otherwise, calculate the max revenue
     else
     {
         int q = -1;
         for (int i = min(n, (int)p.size() - 1); i >= 1; i--)
         {
+            // if the price is -1, skip it. this is to account for the fact that the price vector
+            // is not necessarily the same length as the rod
             if (p[i] == -1)
             {
                 continue;
             }
+            // otherwise, calculate the max revenue
             if (n - i >= 0)
             {
                 q = max(q, p[i] + memoizedCutRodAux(p, n - i, r));
@@ -120,13 +128,17 @@ int memoizedCutRodAux(vector<int> p, int n, vector<int> &r)
 
 long long int calcCoinChange(int x, vector<int> &coins)
 {
+    // create a vector to store the number of ways to make change for each value
     vector<long long int> ways(x + 1, 0);
     ways[0] = 1;
+    // iterate through the coins
     for (long unsigned int i = 0; i < coins.size(); i++)
     {
+        // iterate through the values
         int coinValue = coins[i];
         for (int j = coinValue; j <= x; j++)
         {
+            // add the number of ways to make change for the value - the coin value to the number of ways to make change for the value
             ways[j] = ways[j - coinValue] + ways[j];
         }
     }
