@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <chrono>
 
 using namespace std;
 
@@ -61,12 +62,22 @@ int main()
     p[16] = 48;
 
     int n = 64;
+    auto start = chrono::high_resolution_clock::now();
     cout << "Max revenue for rod of length " << n << " is " << memoizedCutRod(p, n) << endl;
+    auto stop = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed = stop - start;
+    cout << "Time taken by rod cutting function: " << elapsed.count() << " seconds" << endl
+         << endl;
 
     // this section tests the coin change problem
     vector<int> coins = {1, 5, 10, 25, 50, 100, 200, 500, 1000, 2000};
     int x = 5000;
+    auto start2 = chrono::high_resolution_clock::now();
     cout << "Number of ways to make change for " << x << " cents is " << calcCoinChange(x, coins) << endl;
+    auto stop2 = chrono::high_resolution_clock::now();
+    chrono::duration<double> elapsed2 = stop2 - start2;
+    cout << "Time taken by coin change function: " << elapsed2.count() << " seconds" << endl
+         << endl;
     return 0;
 }
 
@@ -111,7 +122,7 @@ long long int calcCoinChange(int x, vector<int> &coins)
 {
     vector<long long int> ways(x + 1, 0);
     ways[0] = 1;
-    for (int i = 0; i < coins.size(); i++)
+    for (long unsigned int i = 0; i < coins.size(); i++)
     {
         int coinValue = coins[i];
         for (int j = coinValue; j <= x; j++)
