@@ -34,12 +34,23 @@ int memoizedCutRod(vector<int> p, int n);
 int memoizedCutRodAux(vector<int> p, int n, vector<int> &r);
 
 /**
- * @brief function to calculate the minimum number of coins to make change for x
+ * @brief This struct is used internally to store a combination of coins
+ *
+ */
+struct Combination
+{
+    vector<int> coins;
+};
+
+/**
+ * @brief function to calculate the number of ways to make change for x cents
  *
  * @param x is the amount of change to make
  * @param coins is the vector of coin denominations
- * @return int
+ * @return vector<Combination>
  */
+vector<Combination> calcCoinCombinations(int x, vector<int> &coins);
+
 long long int calcCoinChange(int x, vector<int> &coins);
 
 /**
@@ -71,9 +82,19 @@ int main()
 
     // this section tests the coin change problem
     vector<int> coins = {1, 5, 10, 25, 50, 100, 200, 500, 1000, 2000};
-    int x = 5000;
+    int x = 500;
     auto start2 = chrono::high_resolution_clock::now();
-    cout << "Number of ways to make change for " << x << " cents is " << calcCoinChange(x, coins) << endl;
+    cout << "The combinations for " << x << " cents are:" << endl;
+    vector<Combination> combinations = calcCoinCombinations(x, coins);
+    for (Combination combination : combinations)
+    {
+        cout << "\t";
+        for (int coin : combination.coins)
+        {
+            cout << coin << " ";
+        }
+        cout << endl;
+    }
     auto stop2 = chrono::high_resolution_clock::now();
     chrono::duration<double> elapsed2 = stop2 - start2;
     cout << "Time taken by coin change function: " << elapsed2.count() << " seconds" << endl
@@ -124,6 +145,32 @@ int memoizedCutRodAux(vector<int> p, int n, vector<int> &r)
         r[n] = q;
         return q;
     }
+}
+
+vector<Combination> calcCoinCombinations(int x, vector<int> &coins)
+{
+    // create a vector to store the number of ways to make change for each value
+    vector<vector<Combination>> combinations(x + 1);
+    Combination initial;
+    initial.coins = {};
+    combinations[0].push_back(initial);
+
+    // iterate through the coins
+    for (long unsigned int i = 0; i < coins.size(); i++)
+    {
+        // iterate through the values
+        int coinValue = coins[i];
+        for (int j = coinValue; j <= x; j++)
+        {
+            for (Combination &combination : combinations[j - coinValue])
+            {
+                Combination newCombination = combination;
+                newCombination.coins.push_back(coinValue);
+                combinations[j].push_back(newCombination);
+            }
+        }
+    }
+    return combinations[x];
 }
 
 long long int calcCoinChange(int x, vector<int> &coins)
