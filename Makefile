@@ -27,3 +27,7 @@ $(DEBUG_EXEC): $(OBJ)
 # Clean
 clean:
 	rm -f $(OBJ) $(EXEC) $(DEBUG_EXEC)
+
+# Run release build
+run: $(EXEC)
+	./$(EXEC)
