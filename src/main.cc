@@ -6,7 +6,7 @@
  */
 
 #include <iostream>
-#include <string>
+#include <fstream>
 #include <vector>
 #include <chrono>
 
@@ -51,13 +51,35 @@ struct Combination
  */
 vector<Combination> calcCoinCombinations(int x, vector<int> &coins);
 
+/**
+ * @brief function to calculate the number of ways to make change for x cents
+ *
+ * @param x is the amount of change to make
+ * @param coins is the vector of coin denominations
+ * @return long long int
+ */
 long long int calcCoinChange(int x, vector<int> &coins);
 
 /**
- * @brief Main function for HW4
+ * @brief Main function for HW4. This function executes the test experiments
  */
 int main()
 {
+    // this section checks for a file named "combinations.txt". If it is found, it is deleted
+    // this is to ensure that the file is empty before the program starts
+    if (remove("combinations.txt") != 0)
+    {
+        perror("Combinations file not present (this is normal)");
+    }
+    else
+    {
+        puts("Combinations file successfully deleted (this is normal)");
+    }
+
+    // opens the file
+    ofstream combinationsFile;
+    combinationsFile.open("combinations.txt", ios::app);
+
     // test experiments
 
     // this vector, p, stores the price information. the index of the vector is the length of the rod
@@ -72,33 +94,118 @@ int main()
     p[12] = 36;
     p[16] = 48;
 
-    int n = 64;
-    auto start = chrono::high_resolution_clock::now();
-    cout << "Max revenue for rod of length " << n << " is " << memoizedCutRod(p, n) << endl;
-    auto stop = chrono::high_resolution_clock::now();
-    chrono::duration<double> elapsed = stop - start;
-    cout << "Time taken by rod cutting function: " << elapsed.count() << " seconds" << endl
+    cout << endl
+         << "Testing rod cutting problem" << endl
          << endl;
 
-    // this section tests the coin change problem
-    vector<int> coins = {1, 5, 10, 25, 50, 100, 200, 500, 1000, 2000};
-    int x = 500;
-    auto start2 = chrono::high_resolution_clock::now();
-    cout << "The combinations for " << x << " cents are:" << endl;
-    vector<Combination> combinations = calcCoinCombinations(x, coins);
-    for (Combination combination : combinations)
+    // // time the rod cutting function for the inputs : 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096
+    int n[11] = {4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+    int ans = 0;
+    for (int i = 0; i < 11; i++)
     {
-        cout << "\t";
-        for (int coin : combination.coins)
-        {
-            cout << coin << " ";
-        }
-        cout << endl;
+        // time the rod cutting function
+        auto start = chrono::high_resolution_clock::now();
+        ans = memoizedCutRod(p, n[i]);
+        auto stop = chrono::high_resolution_clock::now();
+        chrono::duration<double> elapsed = stop - start;
+        cout << "Max revenue for rod of length " << n[i] << " is " << ans << ". Time taken by rod cutting function: "
+             << elapsed.count() << " seconds" << endl;
     }
-    auto stop2 = chrono::high_resolution_clock::now();
-    chrono::duration<double> elapsed2 = stop2 - start2;
-    cout << "Time taken by coin change function: " << elapsed2.count() << " seconds" << endl
+
+    // this section tests the coin change problem
+    cout << endl
+         << "Testing coin change problem with the Harry Potter currency" << endl
          << endl;
+    vector<int> harryPotterCurrency = {1, 29, 493};
+    int x[9] = {10, 50, 100, 500, 1000, 1500, 2000, 3000, 5000};
+
+    long long int answer = 0;
+    for (int i = 0; i < 9; i++)
+    {
+        // time the coin change function
+        auto start = chrono::high_resolution_clock::now();
+        answer = calcCoinChange(x[i], harryPotterCurrency);
+        auto stop = chrono::high_resolution_clock::now();
+        chrono::duration<double> elapsed = stop - start;
+        cout << "Number of ways to make change for " << x[i] << " cents is " << answer << ". Time taken by coin change function: "
+             << elapsed.count() << " seconds" << endl;
+    }
+
+    cout << endl
+         << "Testing coin change problem with the US currency" << endl
+         << endl;
+    vector<int> usCurrency = {1, 5, 10, 25, 50, 100, 200, 500, 1000, 2000};
+    for (int i = 0; i < 9; i++)
+    {
+        // time the coin change function
+        auto start = chrono::high_resolution_clock::now();
+        answer = calcCoinChange(x[i], usCurrency);
+        auto stop = chrono::high_resolution_clock::now();
+        chrono::duration<double> elapsed = stop - start;
+        cout << "Number of ways to make change for " << x[i] << " cents is " << answer << ". Time taken by coin change function: "
+             << elapsed.count() << " seconds" << endl;
+    }
+
+    cout << endl
+         << "Testing adapted coin change problem with the US currency" << endl
+         << endl;
+    int adaptedInputs[4] = {10, 25, 50, 100};
+    combinationsFile << "Testing adapted coin change problem with the US currency" << endl
+                     << endl;
+    for (int i = 0; i < 4; i++)
+    {
+        // time the adapted coin change function
+        auto start = chrono::high_resolution_clock::now();
+        vector<Combination> combinations = calcCoinCombinations(adaptedInputs[i], usCurrency);
+        auto stop = chrono::high_resolution_clock::now();
+        chrono::duration<double> elapsed = stop - start;
+        cout << "Time taken by adapted coin change function to calculate " << adaptedInputs[i] << " cents: " << elapsed.count() << " seconds" << endl;
+
+        // write the combinations to the file
+        combinationsFile << "Number of ways to make change for " << adaptedInputs[i] << " cents is " << endl;
+        for (Combination combination : combinations)
+        {
+            for (int coin : combination.coins)
+            {
+                combinationsFile << coin << " ";
+            }
+            combinationsFile << endl;
+        }
+    }
+
+    cout << endl
+         << "Testing adapted coin change problem with the Harry Potter currency" << endl
+         << endl;
+    combinationsFile << endl
+                     << "Testing adapted coin change problem with the Harry Potter currency" << endl
+                     << endl;
+    for (int i = 0; i < 4; i++)
+    {
+        // time the adapted coin change function
+        auto start = chrono::high_resolution_clock::now();
+        vector<Combination> combinations = calcCoinCombinations(adaptedInputs[i], harryPotterCurrency);
+        auto stop = chrono::high_resolution_clock::now();
+        chrono::duration<double> elapsed = stop - start;
+        cout << "Time taken by adapted coin change function to calculate " << adaptedInputs[i] << " cents: " << elapsed.count() << " seconds" << endl;
+
+        // write the combinations to the file
+        combinationsFile << "Number of ways to make change for " << adaptedInputs[i] << " cents is " << endl;
+        for (Combination combination : combinations)
+        {
+            for (int coin : combination.coins)
+            {
+                combinationsFile << coin << " ";
+            }
+            combinationsFile << endl;
+        }
+    }
+
+    cout << endl
+         << "NOTICE: I have included the output of the adapted coin change problem in the file 'combinations.txt'. It is located in the root directory of the project." << endl
+         << "This is because the output is too large to be printed to the console." << endl;
+
+    // close the file
+    combinationsFile.close();
     return 0;
 }
 

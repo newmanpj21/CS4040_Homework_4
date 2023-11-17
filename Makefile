@@ -26,7 +26,7 @@ $(DEBUG_EXEC): $(OBJ)
 
 # Clean
 clean:
-	rm -f $(OBJ) $(EXEC) $(DEBUG_EXEC)
+	rm -f $(OBJ) $(EXEC) $(DEBUG_EXEC) combinations.txt
 
 # Run release build
 run: $(EXEC)
